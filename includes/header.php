@@ -7,8 +7,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-ZlnF4p1jXjCSQrLpKL+JbDJZHIV0zTOUDrwv6F93YmXQd+tQOyER/W8MLB7ZQSw1nlg3U+0YjGVq2IuCE2wF2g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Using a specific version of Font Awesome without integrity check to prevent issues -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Production-ready Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <!-- Alternative approach: Use a specific version of Tailwind CSS -->
+    <!-- <script src="https://cdn.tailwindcss.com/3.4.1"></script> -->
 
     <script>
         tailwind.config = {
@@ -97,10 +102,10 @@
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-6">
                     <?php if (isLoggedIn()): ?>
-                        <a href="dashboard.php" class="nav-link text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                        <a href="dashboard.php" class="text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
                             <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
                         </a>
-                        <a href="add_destination.php" class="nav-link text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                        <a href="add_destination.php" class="text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
                             <i class="fas fa-plus-circle mr-1"></i> Add Destination
                         </a>
                         <a href="logout.php" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center">
@@ -132,10 +137,10 @@
         <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg rounded-b-lg overflow-hidden transition-all duration-300 ease-in-out">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <?php if (isLoggedIn()): ?>
-                    <a href="dashboard.php" class="nav-link flex items-center text-gray-700 hover:bg-gray-50 hover:text-primary block px-4 py-3 rounded-md text-base font-medium transition-colors duration-200">
+                    <a href="dashboard.php" class="flex items-center text-gray-700 hover:bg-gray-50 hover:text-primary block px-4 py-3 rounded-md text-base font-medium transition-colors duration-200">
                         <i class="fas fa-tachometer-alt w-5 mr-2 text-center"></i> Dashboard
                     </a>
-                    <a href="add_destination.php" class="nav-link flex items-center text-gray-700 hover:bg-gray-50 hover:text-primary block px-4 py-3 rounded-md text-base font-medium transition-colors duration-200">
+                    <a href="add_destination.php" class="flex items-center text-gray-700 hover:bg-gray-50 hover:text-primary block px-4 py-3 rounded-md text-base font-medium transition-colors duration-200">
                         <i class="fas fa-plus-circle w-5 mr-2 text-center"></i> Add Destination
                     </a>
                     <a href="logout.php" class="flex items-center bg-red-500 text-white hover:bg-red-600 block px-4 py-3 rounded-md text-base font-medium transition-colors duration-200">

@@ -72,14 +72,14 @@ if (!$is_ajax) {
                 <input type="text" id="searchInput" placeholder="Search destinations..." 
                        class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                 
-                <select id="countryFilter" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                <select id="countryFilter" class="px-7 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                     <option value="">All Countries</option>
                     <?php foreach ($countries as $country): ?>
                         <option value="<?php echo htmlspecialchars($country); ?>"><?php echo htmlspecialchars($country); ?></option>
                     <?php endforeach; ?>
                 </select>
                 
-                <select id="typeFilter" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                <select id="typeFilter" class="px-7 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                     <option value="">All Types</option>
                     <option value="city">City</option>
                     <option value="beach">Beach</option>
@@ -89,7 +89,7 @@ if (!$is_ajax) {
                     <option value="nature">Nature</option>
                 </select>
 
-                <select id="statusFilter" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                <select id="statusFilter" class="px-7 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                     <option value="">All Statuses</option>
                     <option value="wishlist">Wishlist</option>
                     <option value="visited">Visited</option>
