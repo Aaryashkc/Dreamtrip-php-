@@ -1,9 +1,15 @@
 <?php
-require_once 'includes/auth.php';
-requireLogin();
+$is_ajax = isset($_GET['ajax']);
 
-$page_title = 'Add Destination';
-include 'includes/header.php';
+if (!$is_ajax) {
+    require_once 'includes/auth.php';
+    requireLogin();
+    $page_title = 'Add Destination';
+    include 'includes/header.php';
+} else {
+    require_once 'includes/auth.php';
+    requireLogin();
+}
 ?>
 
 <div class="container mx-auto px-4 py-8">
@@ -78,7 +84,7 @@ include 'includes/header.php';
                         Add Destination
                     </button>
                     <a href="dashboard.php" 
-                       class="flex-1 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 text-center">
+                       class="nav-link flex-1 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 text-center">
                         Cancel
                     </a>
                 </div>
@@ -87,10 +93,11 @@ include 'includes/header.php';
     </div>
 </div>
 
-<?php include 'includes/footer.php'; ?>
-
 <script>
-document.getElementById('addForm').addEventListener('submit', function(e) {
+function initializeAddDestination() {
+    const addForm = document.getElementById('addForm');
+    if (addForm && !addForm.dataset.listenerAttached) {
+        addForm.addEventListener('submit', function(e) {
     e.preventDefault();
 
     const form = e.target;
@@ -117,6 +124,12 @@ document.getElementById('addForm').addEventListener('submit', function(e) {
         statusDiv.textContent = 'An unexpected error occurred. Please try again.';
         statusDiv.classList.remove('hidden');
         console.error('Error:', error);
-    });
-});
+        });
+        addForm.dataset.listenerAttached = 'true';
+    }
+}
+
+initializeAddDestination();
 </script>
+
+<?php if (!$is_ajax) { include 'includes/footer.php'; } ?>

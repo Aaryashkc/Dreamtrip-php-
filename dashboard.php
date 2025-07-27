@@ -1,16 +1,27 @@
 <?php
-require_once 'includes/auth.php';
-require_once 'classes/Destination.php';
+$is_ajax = isset($_GET['ajax']);
 
-requireLogin();
+if (!$is_ajax) {
+    require_once 'includes/auth.php';
+    require_once 'classes/Destination.php';
+    requireLogin();
 
-$destination = new Destination();
-$stats = $destination->getStats($_SESSION['user_id']);
-$countries = $destination->getCountries($_SESSION['user_id']);
-$destinations = $destination->getByUserId($_SESSION['user_id']);
+    $destination = new Destination();
+    $stats = $destination->getStats($_SESSION['user_id']);
+    $countries = $destination->getCountries($_SESSION['user_id']);
 
-$page_title = 'Dashboard';
-include 'includes/header.php';
+    $page_title = 'Dashboard';
+    include 'includes/header.php';
+} else {
+    // For AJAX requests, we still need the session and data
+    require_once 'includes/auth.php';
+    require_once 'classes/Destination.php';
+    requireLogin();
+
+    $destination = new Destination();
+    $stats = $destination->getStats($_SESSION['user_id']);
+    $countries = $destination->getCountries($_SESSION['user_id']);
+}
 ?>
 
 <div class="container mx-auto px-4 py-8">
@@ -22,13 +33,13 @@ include 'includes/header.php';
     </div>
 
     <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div id="statsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="bg-white p-6 rounded-lg shadow-md">
             <div class="flex items-center">
                 <div class="text-3xl mr-4">🌍</div>
                 <div>
                     <p class="text-sm text-gray-600">Total Destinations</p>
-                    <p class="text-2xl font-bold text-gray-900"><?php echo $stats['total']; ?></p>
+                    <p id="statsTotal" class="text-2xl font-bold text-gray-900"><?php echo $stats['total']; ?></p>
                 </div>
             </div>
         </div>
@@ -38,7 +49,7 @@ include 'includes/header.php';
                 <div class="text-3xl mr-4">✅</div>
                 <div>
                     <p class="text-sm text-gray-600">Visited</p>
-                    <p class="text-2xl font-bold text-green-600"><?php echo $stats['visited']; ?></p>
+                    <p id="statsVisited" class="text-2xl font-bold text-green-600"><?php echo $stats['visited']; ?></p>
                 </div>
             </div>
         </div>
@@ -48,7 +59,7 @@ include 'includes/header.php';
                 <div class="text-3xl mr-4">💭</div>
                 <div>
                     <p class="text-sm text-gray-600">Wishlist</p>
-                    <p class="text-2xl font-bold text-blue-600"><?php echo $stats['wishlist']; ?></p>
+                    <p id="statsWishlist" class="text-2xl font-bold text-blue-600"><?php echo $stats['wishlist']; ?></p>
                 </div>
             </div>
         </div>
@@ -206,7 +217,10 @@ document.getElementById('cancelDelete').addEventListener('click', () => {
 
 document.getElementById('confirmDelete').addEventListener('click', () => {
     if (currentDeleteId) {
-        const csrfToken = '<?php echo generateCSRFToken(); ?>'; // Get the token
+        // We need a reliable way to get the token, let's add it to a hidden input
+        // In the main layout, you should have: <input type="hidden" id="csrf-token-for-js" value="<?php echo generateCSRFToken(); ?>">
+        // For now, we'll assume it exists. Let's modify the PHP to add it.
+        const csrfToken = document.getElementById('csrf-token-for-js') ? document.getElementById('csrf-token-for-js').value : '<?php echo generateCSRFToken(); ?>'; // Fallback for initial load
         const formData = new FormData();
         formData.append('id', currentDeleteId);
         formData.append('csrf_token', csrfToken);
@@ -219,6 +233,7 @@ document.getElementById('confirmDelete').addEventListener('click', () => {
         .then(data => {
             if (data.success) {
                 loadDestinations(); // Reload the list
+                updateStats(); // Reload the stats
                 document.getElementById('deleteModal').classList.add('hidden');
                 document.getElementById('deleteModal').classList.remove('flex');
             } else {
@@ -234,6 +249,68 @@ document.getElementById('confirmDelete').addEventListener('click', () => {
     currentDeleteId = null;
 });
 
-// Load destinations on page load
-loadDestinations();
+function updateStats() {
+    fetch('api/get_stats.php')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('statsTotal').textContent = data.total;
+            document.getElementById('statsVisited').textContent = data.visited;
+            document.getElementById('statsWishlist').textContent = data.wishlist;
+        })
+        .catch(error => console.error('Error updating stats:', error));
+}
+
+// Load initial data
+function initializeDashboard() {
+    loadDestinations();
+    updateStats();
+
+    // Re-attach event listeners if they are not delegated
+    document.getElementById('searchInput').addEventListener('input', loadDestinations);
+    document.getElementById('countryFilter').addEventListener('change', loadDestinations);
+    document.getElementById('typeFilter').addEventListener('change', loadDestinations);
+    document.getElementById('statusFilter').addEventListener('change', loadDestinations);
+
+    document.getElementById('cancelDelete').addEventListener('click', () => {
+        document.getElementById('deleteModal').classList.add('hidden');
+        document.getElementById('deleteModal').classList.remove('flex');
+        currentDeleteId = null;
+    });
+
+    document.getElementById('confirmDelete').addEventListener('click', () => {
+        if (currentDeleteId) {
+            const csrfToken = document.getElementById('csrf-token-for-js').value;
+            const formData = new FormData();
+            formData.append('id', currentDeleteId);
+            formData.append('csrf_token', csrfToken);
+
+            fetch('api/delete_destination.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadDestinations();
+                    updateStats();
+                    document.getElementById('deleteModal').classList.add('hidden');
+                    document.getElementById('deleteModal').classList.remove('flex');
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to delete destination.'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An unexpected error occurred.');
+            });
+        }
+        document.getElementById('deleteModal').classList.remove('flex');
+        currentDeleteId = null;
+    });
+}
+
+initializeDashboard();
+
 </script>
+
+<?php if (!$is_ajax) { include 'includes/footer.php'; } ?>

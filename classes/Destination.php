@@ -94,10 +94,10 @@ class Destination {
     public function getStats($user_id) {
         try {
             $query = "SELECT 
-                        COUNT(*) as total,
-                        SUM(CASE WHEN status = 'visited' THEN 1 ELSE 0 END) as visited,
-                        SUM(CASE WHEN status = 'wishlist' THEN 1 ELSE 0 END) as wishlist
-                      FROM " . $this->table . " WHERE user_id = ?";
+                    COUNT(*) as total,
+                    COALESCE(SUM(CASE WHEN status = 'visited' THEN 1 ELSE 0 END), 0) as visited,
+                    COALESCE(SUM(CASE WHEN status = 'wishlist' THEN 1 ELSE 0 END), 0) as wishlist
+                  FROM " . $this->table . " WHERE user_id = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->execute([$user_id]);
             return $stmt->fetch();
