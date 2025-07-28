@@ -7,6 +7,20 @@
             </div>
         </div>
     </footer>
-<script src="scripts/app.js"></script>
+    <script>
+        // Debug: Check if app.js is loaded
+        console.log('Footer script running');
+        
+        // Try loading app.js with a cache-busting parameter
+        var script = document.createElement('script');
+        script.src = 'scripts/app.js?v=' + new Date().getTime();
+        script.onload = function() {
+            console.log('app.js loaded successfully');
+        };
+        script.onerror = function() {
+            console.error('Failed to load app.js');
+        };
+        document.body.appendChild(script);
+    </script>
 </body>
 </html>

@@ -160,10 +160,36 @@
 
     <main id="main-content" class="flex-grow">
     <input type="hidden" id="csrf-token-for-js" value="<?php echo generateCSRFToken(); ?>">
-
+    
     <script>
-        document.getElementById('mobile-menu-button').addEventListener('click', function () {
-            var menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        });
+    // Mobile menu functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (menuButton && mobileMenu) {
+            // Toggle menu when button is clicked
+            menuButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!menuButton.contains(e.target) && !mobileMenu.contains(e.target)) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+            
+            // Close menu when clicking on a menu item
+            mobileMenu.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A' || e.target.closest('a')) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        } else {
+            console.error('Mobile menu elements not found');
+        }
+    });
     </script>
