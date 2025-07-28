@@ -351,8 +351,8 @@ include 'includes/header.php';
                             </svg>
                         </div>
                         <div class="text-left">
-                            <div class="text-lg md:text-xl font-bold text-gray-900">180+</div>
-                            <div class="text-xs md:text-sm text-gray-600">Countries Covered</div>
+                            <div class="text-lg md:text-xl font-bold text-gray-900">100%</div>
+                            <div class="text-xs md:text-sm text-gray-600">Customizable Plans</div>
                         </div>
                     </div>
                 </div>

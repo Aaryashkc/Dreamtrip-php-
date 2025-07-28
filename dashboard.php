@@ -116,6 +116,8 @@ if (!$is_ajax) {
         <div class="text-gray-400 text-6xl mb-4">🔍</div>
         <p class="text-gray-600">No destinations found matching your criteria.</p>
     </div>
+    <!-- Pagination Controls -->
+    <div id="paginationControls" class="flex justify-center items-center gap-2 mt-8"></div>
 </div>
 
 <!-- Delete Confirmation Modal -->
@@ -136,9 +138,12 @@ if (!$is_ajax) {
 
 <script>
 let currentDeleteId = null;
+let currentPage = 1;
+const limit = 10;
 
 // Load destinations
-function loadDestinations() {
+function loadDestinations(page = 1) {
+    currentPage = page;
     const search = document.getElementById('searchInput').value;
     const country = document.getElementById('countryFilter').value;
     const type = document.getElementById('typeFilter').value;
@@ -149,16 +154,24 @@ function loadDestinations() {
     if (country) params.append('country', country);
     if (type) params.append('type', type);
     if (status) params.append('status', status);
+    params.append('page', page);
+    params.append('limit', limit);
     
     fetch(`api/destinations.php?${params.toString()}`)
         .then(response => response.json())
-        .then(data => {
+        .then(result => {
+            const data = result.data;
+            const total = result.total;
+            const page = result.page;
+            const limit = result.limit;
             const container = document.getElementById('destinationsList');
             const noResults = document.getElementById('noResults');
+            const pagination = document.getElementById('paginationControls');
             
             if (data.length === 0) {
                 container.innerHTML = '';
                 noResults.classList.remove('hidden');
+                pagination.innerHTML = '';
             } else {
                 noResults.classList.add('hidden');
                 container.innerHTML = data.map(destination => `
@@ -189,6 +202,17 @@ function loadDestinations() {
                         </div>
                     </div>
                 `).join('');
+                // Pagination controls
+                const totalPages = Math.ceil(total / limit);
+                let html = '';
+                if (totalPages > 1) {
+                    html += `<button ${page === 1 ? 'disabled' : ''} onclick="loadDestinations(${page - 1})" class="px-3 py-1 rounded ${page === 1 ? 'bg-gray-200 text-gray-400' : 'bg-white text-gray-700 border'}">Prev</button>`;
+                    for (let i = 1; i <= totalPages; i++) {
+                        html += `<button onclick="loadDestinations(${i})" class="px-3 py-1 rounded ${i === page ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 border'}">${i}</button>`;
+                    }
+                    html += `<button ${page === totalPages ? 'disabled' : ''} onclick="loadDestinations(${page + 1})" class="px-3 py-1 rounded ${page === totalPages ? 'bg-gray-200 text-gray-400' : 'bg-white text-gray-700 border'}">Next</button>`;
+                }
+                pagination.innerHTML = html;
             }
         })
         .catch(error => {
@@ -197,10 +221,10 @@ function loadDestinations() {
 }
 
 // Event listeners
-document.getElementById('searchInput').addEventListener('input', loadDestinations);
-document.getElementById('countryFilter').addEventListener('change', loadDestinations);
-document.getElementById('typeFilter').addEventListener('change', loadDestinations);
-document.getElementById('statusFilter').addEventListener('change', loadDestinations);
+document.getElementById('searchInput').addEventListener('input', () => loadDestinations(1));
+document.getElementById('countryFilter').addEventListener('change', () => loadDestinations(1));
+document.getElementById('typeFilter').addEventListener('change', () => loadDestinations(1));
+document.getElementById('statusFilter').addEventListener('change', () => loadDestinations(1));
 
 // Delete modal functions
 function showDeleteModal(id) {
@@ -262,14 +286,14 @@ function updateStats() {
 
 // Load initial data
 function initializeDashboard() {
-    loadDestinations();
+    loadDestinations(1);
     updateStats();
 
     // Re-attach event listeners if they are not delegated
-    document.getElementById('searchInput').addEventListener('input', loadDestinations);
-    document.getElementById('countryFilter').addEventListener('change', loadDestinations);
-    document.getElementById('typeFilter').addEventListener('change', loadDestinations);
-    document.getElementById('statusFilter').addEventListener('change', loadDestinations);
+    document.getElementById('searchInput').addEventListener('input', () => loadDestinations(1));
+    document.getElementById('countryFilter').addEventListener('change', () => loadDestinations(1));
+    document.getElementById('typeFilter').addEventListener('change', () => loadDestinations(1));
+    document.getElementById('statusFilter').addEventListener('change', () => loadDestinations(1));
 
     document.getElementById('cancelDelete').addEventListener('click', () => {
         document.getElementById('deleteModal').classList.add('hidden');

@@ -22,7 +22,7 @@ class Destination {
         }
     }
 
-    public function getByUserId($user_id, $filters = []) {
+    public function getByUserId($user_id, $filters = [], $limit = null, $offset = null) {
         try {
             $query = "SELECT * FROM " . $this->table . " WHERE user_id = ?";
             $params = [$user_id];
@@ -31,17 +31,14 @@ class Destination {
                 $query .= " AND country = ?";
                 $params[] = $filters['country'];
             }
-
             if (!empty($filters['type'])) {
                 $query .= " AND type = ?";
                 $params[] = $filters['type'];
             }
-
             if (!empty($filters['status'])) {
                 $query .= " AND status = ?";
                 $params[] = $filters['status'];
             }
-
             if (!empty($filters['search'])) {
                 $query .= " AND (name LIKE ? OR country LIKE ? OR notes LIKE ?)";
                 $search = '%' . $filters['search'] . '%';
@@ -49,14 +46,48 @@ class Destination {
                 $params[] = $search;
                 $params[] = $search;
             }
-
             $query .= " ORDER BY created_at DESC";
-            
+            if ($limit !== null && $offset !== null) {
+                $query .= " LIMIT ? OFFSET ?";
+                $params[] = (int)$limit;
+                $params[] = (int)$offset;
+            }
             $stmt = $this->conn->prepare($query);
             $stmt->execute($params);
             return $stmt->fetchAll();
         } catch (PDOException $e) {
             return [];
+        }
+    }
+
+    public function countByUserId($user_id, $filters = []) {
+        try {
+            $query = "SELECT COUNT(*) FROM " . $this->table . " WHERE user_id = ?";
+            $params = [$user_id];
+            if (!empty($filters['country'])) {
+                $query .= " AND country = ?";
+                $params[] = $filters['country'];
+            }
+            if (!empty($filters['type'])) {
+                $query .= " AND type = ?";
+                $params[] = $filters['type'];
+            }
+            if (!empty($filters['status'])) {
+                $query .= " AND status = ?";
+                $params[] = $filters['status'];
+            }
+            if (!empty($filters['search'])) {
+                $query .= " AND (name LIKE ? OR country LIKE ? OR notes LIKE ?)";
+                $search = '%' . $filters['search'] . '%';
+                $params[] = $search;
+                $params[] = $search;
+                $params[] = $search;
+            }
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute($params);
+            return (int)$stmt->fetchColumn();
+        } catch (PDOException $e) {
+            return 0;
         }
     }
 

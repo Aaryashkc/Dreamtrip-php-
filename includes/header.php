@@ -103,10 +103,10 @@
                 <div class="hidden md:flex items-center space-x-6">
                     <?php if (isLoggedIn()): ?>
                         <a href="dashboard.php" class="text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
-                            <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
+                            Dashboard
                         </a>
                         <a href="add_destination.php" class="text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
-                            <i class="fas fa-plus-circle mr-1"></i> Add Destination
+                            Add Destination
                         </a>
                         <a href="logout.php" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center">
                             <i class="fas fa-sign-out-alt mr-1"></i> Logout
@@ -138,10 +138,10 @@
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <?php if (isLoggedIn()): ?>
                     <a href="dashboard.php" class="flex items-center text-gray-700 hover:bg-gray-50 hover:text-primary block px-4 py-3 rounded-md text-base font-medium transition-colors duration-200">
-                        <i class="fas fa-tachometer-alt w-5 mr-2 text-center"></i> Dashboard
+                        Dashboard
                     </a>
                     <a href="add_destination.php" class="flex items-center text-gray-700 hover:bg-gray-50 hover:text-primary block px-4 py-3 rounded-md text-base font-medium transition-colors duration-200">
-                        <i class="fas fa-plus-circle w-5 mr-2 text-center"></i> Add Destination
+                        Add Destination
                     </a>
                     <a href="logout.php" class="flex items-center bg-red-500 text-white hover:bg-red-600 block px-4 py-3 rounded-md text-base font-medium transition-colors duration-200">
                         <i class="fas fa-sign-out-alt w-5 mr-2 text-center"></i> Logout

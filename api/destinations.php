@@ -25,7 +25,18 @@ if (isset($_GET['status']) && !empty($_GET['status'])) {
     $filters['status'] = sanitizeInput($_GET['status']);
 }
 
-$destinations = $destination->getByUserId($_SESSION['user_id'], $filters);
+// Pagination
+$page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0 ? (int)$_GET['page'] : 1;
+$limit = isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit'] > 0 ? (int)$_GET['limit'] : 10;
+$offset = ($page - 1) * $limit;
 
-echo json_encode($destinations);
+$total = $destination->countByUserId($_SESSION['user_id'], $filters);
+$destinations = $destination->getByUserId($_SESSION['user_id'], $filters, $limit, $offset);
+
+echo json_encode([
+    'data' => $destinations,
+    'total' => $total,
+    'page' => $page,
+    'limit' => $limit
+]);
 ?>
