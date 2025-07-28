@@ -441,8 +441,8 @@ include 'includes/header.php';
                     </div>
                     <div class="absolute -top-2 -right-2 w-6 h-6 bg-secondary/20 rounded-full animate-ping animation-delay-600"></div>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-4 group-hover:text-accent transition-colors duration-300">Smart Search</h3>
-                <p class="text-gray-600 mb-6 text-lg leading-relaxed">Easily find destinations with powerful search and filtering options by country, type, or status. AI-powered recommendations personalize your experience.</p>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4 group-hover:text-accent transition-colors duration-300"> Powerful Search</h3>
+                <p class="text-gray-600 mb-6 text-lg leading-relaxed">Easily find destinations with powerful search and filtering options by country, type, or status.</p>
             </div>
         </div>
 
